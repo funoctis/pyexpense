@@ -3,8 +3,11 @@
 
 import sqlite3
 import hashlib
+import datetime
 
-conn = sqlite3.connect('database.db')
+conn = sqlite3.connect('database.db',
+                        detect_types=sqlite3.PARSE_DECLTYPES | 
+                        sqlite3.PARSE_COLNAMES)
 
 def init_db():
     """
@@ -108,8 +111,8 @@ def get_userid(username: str) -> int:
 def insert_transaction(userid: int, name: str, amount: float):
     cursor = conn.cursor()
     try:
-        cursor.execute(f"INSERT INTO expenses (userid, name, amount) \
-            VALUES ('{userid}', '{name}', '{amount}')")
+        cursor.execute(f"INSERT INTO expenses (userid, name, amount, timestamp) \
+            VALUES ('{userid}', '{name}', '{amount}', '{datetime.datetime.now()}')")
     except sqlite3.Error as e:
         print("Failed to add expense. Check input and try again.")
         print(e.__class__, e.args)
@@ -122,12 +125,12 @@ def delete_expense(id: int):
     cursor = conn.cursor()
     try:
         cursor.execute(f"DELETE FROM expenses WHERE id={id}")
-        print("here1")
+        
     except sqlite3.Error as e:
         print("Failed to delete expense.")
         print(e)
     finally:
         cursor.close()
         conn.commit()
-        print("here2")
+        
 

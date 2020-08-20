@@ -80,12 +80,13 @@ def remove_expense(userid: int, cmd: list):
     if len(rows) > 0:
         print("Following expenses match the name.")
         for index, row in enumerate(rows):
-            print(f"{index}. {row[2]} -- {row[3]}")
+            date = f"{row[4].day}-{row[4].month}-{row[4].year}"
+            print("Index\tName\tAmount\tTime")
+            print(f"{index}\t{row[2]}\t{row[3]}\t{date}")
         choice = int(input("Enter the index of the expense you wish to delete: "))
         
-        if choice >= 0 and choice <= len(rows):
+        if choice >= 0 and choice < len(rows):
             database.delete_expense(rows[choice][0])
-            
         else:
             print("Invalid index")
     else:
