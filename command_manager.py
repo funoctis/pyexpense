@@ -70,3 +70,23 @@ def add_expense(userid: int, cmd: list):
         print("Please enter a number as amount.")
     except Exception as e:
         print(e)
+
+def remove_expense(userid: int, cmd: list):
+    assert len(cmd) == 2, "Please enter using the format -- remove name"
+    
+    name = cmd[1]
+    rows = database.query(f"SELECT * FROM expenses WHERE userid='{userid}' AND name='{name}'")
+    
+    if len(rows) > 0:
+        print("Following expenses match the name.")
+        for index, row in enumerate(rows):
+            print(f"{index}. {row[2]} -- {row[3]}")
+        choice = int(input("Enter the index of the expense you wish to delete: "))
+        
+        if choice >= 0 and choice <= len(rows):
+            database.delete_expense(rows[choice][0])
+            
+        else:
+            print("Invalid index")
+    else:
+        print("No expense with such a name exists. Please check again.")
