@@ -49,7 +49,7 @@ def input_commands(username: str):
     """
 
     print(f"\nWelcome, {username}\n")
-    print("For help on how to user PyExpense, type 'help'. To exit, type 'exit'.")
+    print("For help on how to use PyExpense, type 'help'. To exit, type 'exit'.")
 
     userid = database.get_userid(username)   
     while True:
