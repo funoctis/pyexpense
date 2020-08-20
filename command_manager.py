@@ -151,9 +151,10 @@ def remove_budget(userid: int, cmd: list):
 
 
 def report(userid: int, cmd: list):
-    if len(cmd) == 1:
-        rows = database.query(f"SELECT name, amount, timestamp FROM expenses \
+    rows = database.query(f"SELECT name, amount, timestamp FROM expenses \
             WHERE userid={userid}")
+    
+    if len(cmd) == 1:
         
         this_weeks_expenses = list()
         now = datetime.datetime.now()
@@ -194,3 +195,55 @@ def report(userid: int, cmd: list):
             weekly_total += day_total
         
         print(f"\nTotal expenditure from this week: {weekly_total}")
+
+    
+    elif len(cmd) == 2:
+        try:
+            n = int(cmd[1])
+            days = 6+((n-1)*7)
+            
+            now = datetime.datetime.now()
+            start_of_period = now - datetime.timedelta(days=days)
+            pretty_now = f"{now.day}-{now.month}-{now.year}"
+            pretty_start_of_period = f"{start_of_period.day}-{start_of_period.month}-{start_of_period.year}"
+            
+            this_periods_expenses = list()
+            for row in rows:
+                if row[2] >= start_of_period:
+                    pretty_date = f"{row[2].day}-{row[2].month}-{row[2].year}"
+                    this_periods_expenses.append((row[0], row[1], pretty_date))
+
+                       
+            expenses_by_day = {}
+            
+            weekly_total = 0
+            # iterating over the list of expenses
+            for expense in this_periods_expenses:
+                # checking the expense date in the dict
+                if expense[2] in expenses_by_day:
+                    # add the current expense to dict
+                    expenses_by_day[expense[2]].append(expense)
+                else:
+                    # initiate the date with list of expenses
+                    expenses_by_day[expense[2]] = [expense]
+            
+            print(f"\n\t\tEXPENSE REPORT FOR THE PERIOD: {pretty_start_of_period} to {pretty_now}")
+            # printing the expenses_by_day
+            for day in expenses_by_day:
+                day_total = 0
+                print("\nDate: ", day)
+                for index, single_expense in enumerate(expenses_by_day[day]):
+                    day_total += float(single_expense[1])
+                    print(f"\t{index}\t{single_expense[0]}\t\t{single_expense[1]}\t{single_expense[2]}")
+                print(f"Total expenditure on {day}: {day_total}")
+                weekly_total += day_total
+            
+            print(f"\nTotal expenditure from this period: {weekly_total}")
+
+        except ValueError:
+            print("Please enter a valid number of weeks")
+        except Exception as e:
+            print(e.__class__, e.args)
+
+        
+
