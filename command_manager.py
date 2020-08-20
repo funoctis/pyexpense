@@ -52,15 +52,32 @@ def show_helptext():
         add name amount     -   add a record of an expense, where 'name' can be 
                                 what you spent on and 'amount' is how much you
                                 spent
+                                example, to add chocolates worth 100 rupees: 
+                                add chocolates 100
+        
         remove name         -   remove a previously added expense named 'name'
+                                example, to remove chocolates from 
+                                expenses: 
+                                remove chocolates
+        
         report              -   get a report of your expenses from the past week
+        
         report n            -   get a report from previous 'n' weeks, grouped
                                 by week
+                                example, to get a report of past 3 weeks: 
+                                report 3
+        
         budget              -   see your current budget
+        
         budget x            -   set a weekly budget 'x', and PyExpense will
                                 let you know if you cross it
+                                example, to set budget of 1500: 
+                                budget 1500
+        
         nobudget            -   remove a previously set budget
+        
         logout              -   logout from current account
+        
         exit                -   exit the application
         """
     print(help_text)
