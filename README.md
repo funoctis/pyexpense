@@ -7,6 +7,18 @@ PyExpense is a basic command-line based expense and budget manager.
 Tested on Python 3.8.1. Requires Python 3.6 or higher.
 No external dependency required. PyExpense is built using only the Python stdlib.
 
+## How To Run
+
+Clone this repository with
+
+    git clone https://github.com/funoctis/pyexpense.git
+
+To start PyExpense, run
+
+    python3 main.py
+
+The command can differ based on your system. If you're on Windows, use `python main.py`.
+
 ## Features
 
 - Supports multiple users
@@ -18,14 +30,6 @@ No external dependency required. PyExpense is built using only the Python stdlib
 - Get an warning if your weekly expenses go over the set budget
 - Get a weekly report, i.e., of the last 7 days
 - Get a report for 'n' number of week, for e.g., get a report of the last 21 days by specifying 3 weeks
-
-## How To Run
-
-To start PyExpense, run
-
-    python3 main.py
-
-The command can differ based on your system. If you're on Windows, use `python main.py`.
 
 ## How To Use
 
