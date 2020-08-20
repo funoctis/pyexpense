@@ -103,9 +103,15 @@ def validate_user(username: str, password: str) -> bool:
 
 def get_userid(username: str) -> int:
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM users WHERE username='{username}'")
-    user = cursor.fetchone()
-    return user[0]
+    try:
+        cursor.execute(f"SELECT * FROM users WHERE username='{username}'")
+        user = cursor.fetchone()
+        return user[0]
+    except sqlite3.Error as e:
+        raise("InternalDatabaseError: Could not fetch userid")
+    finally:
+        cursor.close()
+    return None
 
 
 def insert_transaction(userid: int, name: str, amount: float):
@@ -134,3 +140,34 @@ def delete_expense(id: int):
         conn.commit()
         
 
+def get_budget_for_user(userid: int):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"SELECT budget FROM users WHERE userid={userid}")
+        record = cursor.fetchone()
+        return record
+    except sqlite3.Error as e:
+        raise("InternalDatabaseError: Could not fetch budget.")
+    finally:
+        cursor.close()
+
+def update_budget(userid: int, budget: float):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"UPDATE users SET budget={budget} WHERE userid={userid}")
+    except sqlite3.Error as e:
+        print(e.__class__, e.args)
+    finally:
+        cursor.close
+        conn.commit()
+
+
+def make_budget_null(userid: int):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"UPDATE users SET budget=NULL WHERE userid={userid}")
+    except sqlite3.Error as e:
+        print(e.__class__, e.args)
+    finally:
+        cursor.close
+        conn.commit()

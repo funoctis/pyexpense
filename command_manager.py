@@ -19,12 +19,16 @@ def route(userid: int, command: str):
         cmd = command.split()
         if cmd[0] == 'add':
             add_expense(userid, cmd)
-            check_if_budget_crossed(userid)
+            check_budget(userid)
         elif cmd[0] == 'remove':
             remove_expense(userid, cmd)
             check_budget(userid)
         elif cmd[0] == 'budget':
-            set_budget(userid, cmd)
+            if len(cmd) == 1:
+                check_budget(userid)
+                print("To set/change budget, use -- budget x")
+            else:
+                set_budget(userid, cmd)
         elif cmd[0] == 'nobudget':
             remove_budget(userid, cmd)
         elif cmd[0] == 'report':
@@ -71,6 +75,7 @@ def add_expense(userid: int, cmd: list):
     except Exception as e:
         print(e)
 
+
 def remove_expense(userid: int, cmd: list):
     assert len(cmd) == 2, "Please enter using the format -- remove name"
     
@@ -91,3 +96,32 @@ def remove_expense(userid: int, cmd: list):
             print("Invalid index")
     else:
         print("No expense with such a name exists. Please check again.")
+
+
+def check_budget(userid: int):
+    budget = database.get_budget_for_user(userid)
+    if budget == None:
+        print("You can set a budget with the budget command.")
+    else:
+        print("budget: ", budget[0])
+
+
+def set_budget(userid: int, cmd: list):
+    assert len(cmd) == 2, "Please enter using the format -- budget x"
+    try:
+        new_budget = float(cmd[1])
+        database.update_budget(userid, new_budget)
+    except ValueError:
+        print("Please enter a number as budget.")
+    except Exception as e:
+        print(e)
+
+
+def remove_budget(userid: int, cmd: list):
+    assert len(cmd) == 1, "Please enter using the format -- nobudget"
+    try:
+        database.make_budget_null(userid)
+    except Exception as e:
+        print(e)
+
+
