@@ -84,9 +84,9 @@ def remove_expense(userid: int, cmd: list):
     
     if len(rows) > 0:
         print("Following expenses match the name.")
+        print("Index\tName\tAmount\tTime")
         for index, row in enumerate(rows):
             date = f"{row[4].day}-{row[4].month}-{row[4].year}"
-            print("Index\tName\tAmount\tTime")
             print(f"{index}\t{row[2]}\t{row[3]}\t{date}")
         choice = int(input("Enter the index of the expense you wish to delete: "))
         
@@ -100,8 +100,8 @@ def remove_expense(userid: int, cmd: list):
 
 def check_budget(userid: int):
     budget = database.get_budget_for_user(userid)
-    if budget == None:
-        print("You can set a budget with the budget command.")
+    if budget[0] == None:
+        print("Tip: You can set a budget with the budget command.")
     else:
         print("budget: ", budget[0])
         
@@ -116,6 +116,7 @@ def check_budget(userid: int):
             if row[2] > start_of_week:
                 pretty_date = f"{row[2].day}-{row[2].month}-{row[2].year}"
                 this_weeks_expenses.append((row[0], row[1], pretty_date))
+                
 
         weekly_total = 0
         for expense in this_weeks_expenses:
