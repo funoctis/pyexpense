@@ -56,9 +56,11 @@ def show_helptext():
         report              -   get a report of your expenses from the past week
         report n            -   get a report from previous 'n' weeks, grouped
                                 by week
+        budget              -   see your current budget
         budget x            -   set a weekly budget 'x', and PyExpense will
                                 let you know if you cross it
         nobudget            -   remove a previously set budget
+        logout              -   logout from current account
         exit                -   exit the application
         """
     print(help_text)
