@@ -34,6 +34,12 @@ def close():
     conn.close()
 
 
+def query(query_str: str) -> list:
+    cursor = conn.cursor()
+    cursor.execute(query_str)
+    rows = cursor.fetchall()
+    return rows
+
 def create_new_user():
     """
     Creates a new user to manage expenses for.
@@ -96,7 +102,7 @@ def get_userid(username: str) -> int:
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM users WHERE username='{username}'")
     user = cursor.fetchone()
-    return user[1]
+    return user[0]
 
 
 def insert_transaction(userid: int, name: str, amount: float):
@@ -110,3 +116,18 @@ def insert_transaction(userid: int, name: str, amount: float):
     finally:
         cursor.close()
         conn.commit()
+
+
+def delete_expense(id: int):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"DELETE FROM expenses WHERE id={id}")
+        print("here1")
+    except sqlite3.Error as e:
+        print("Failed to delete expense.")
+        print(e)
+    finally:
+        cursor.close()
+        conn.commit()
+        print("here2")
+
