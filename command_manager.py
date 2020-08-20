@@ -5,7 +5,7 @@
 # that receives the commands and routes it its relevent handler.
 
 import database
-
+import datetime
 
 def route(userid: int, command: str):
     """
@@ -104,6 +104,31 @@ def check_budget(userid: int):
         print("You can set a budget with the budget command.")
     else:
         print("budget: ", budget[0])
+        
+        rows = database.query(f"SELECT name, amount, timestamp FROM expenses \
+            WHERE userid={userid}")
+        
+        this_weeks_expenses = list()
+        now = datetime.datetime.now()
+        start_of_week = now - datetime.timedelta(days=7)
+        
+        for row in rows:
+            if row[2] > start_of_week:
+                pretty_date = f"{row[2].day}-{row[2].month}-{row[2].year}"
+                this_weeks_expenses.append((row[0], row[1], pretty_date))
+
+        weekly_total = 0
+        for expense in this_weeks_expenses:
+            weekly_total += float(expense[1])
+        
+        budget = float(budget[0])
+        if weekly_total > budget:
+            print("WARNING: You have exceeded the weekly budget.")
+            print(f"Amount spent over budget: {weekly_total - budget}")
+        else:
+            print("You are within your weekly budget.")
+            print(f"Safe to spend: {budget - weekly_total}")
+        
 
 
 def set_budget(userid: int, cmd: list):
@@ -125,3 +150,47 @@ def remove_budget(userid: int, cmd: list):
         print(e)
 
 
+def report(userid: int, cmd: list):
+    if len(cmd) == 1:
+        rows = database.query(f"SELECT name, amount, timestamp FROM expenses \
+            WHERE userid={userid}")
+        
+        this_weeks_expenses = list()
+        now = datetime.datetime.now()
+        start_of_week = now - datetime.timedelta(days=6)
+        pretty_now = f"{now.day}-{now.month}-{now.year}"
+        pretty_start_of_week = f"{start_of_week.day}-{start_of_week.month}-{start_of_week.year}"
+        for row in rows:
+            if row[2] >= start_of_week:
+                pretty_date = f"{row[2].day}-{row[2].month}-{row[2].year}"
+                this_weeks_expenses.append((row[0], row[1], pretty_date))
+
+        # print("Sr. No\tName\t\tAmount\tDate")
+        # for index, expense in enumerate(this_weeks_expenses):
+        #     print(f"{index}\t{expense[0]}\t\t{expense[1]}\t{expense[2]}")
+
+        expenses_by_day = {}
+        
+        weekly_total = 0
+        # iterating over the list of expenses
+        for expense in this_weeks_expenses:
+            # checking the expense date in the dict
+            if expense[2] in expenses_by_day:
+                # add the current expense to dict
+                expenses_by_day[expense[2]].append(expense)
+            else:
+                # initiate the date with list of expenses
+                expenses_by_day[expense[2]] = [expense]
+        
+        print(f"\n\t\tEXPENSE REPORT FOR THE WEEK: {pretty_start_of_week} to {pretty_now}")
+        # printing the expenses_by_day
+        for day in expenses_by_day:
+            day_total = 0
+            print("\nDate: ", day)
+            for index, single_expense in enumerate(expenses_by_day[day]):
+                day_total += float(single_expense[1])
+                print(f"\t{index}\t{single_expense[0]}\t\t{single_expense[1]}\t{single_expense[2]}")
+            print(f"Total expenditure on {day}: {day_total}")
+            weekly_total += day_total
+        
+        print(f"\nTotal expenditure from this week: {weekly_total}")
