@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS "expenses" (
 	"name"	TEXT NOT NULL,
 	"amount"	NUMERIC NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT),
-    FOREIGN KEY(userid) REFERENCES USERS(userid)
+    FOREIGN KEY(userid) REFERENCES users(userid)
 );
