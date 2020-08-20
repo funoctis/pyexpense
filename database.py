@@ -38,6 +38,10 @@ def close():
 
 
 def query(query_str: str) -> list:
+    """
+    Execute the given query against the database and return the results.
+    """
+    
     cursor = conn.cursor()
     cursor.execute(query_str)
     rows = cursor.fetchall()
@@ -102,6 +106,10 @@ def validate_user(username: str, password: str) -> bool:
     return True
 
 def get_userid(username: str) -> int:
+    """
+    Get userid from database using username. 
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"SELECT * FROM users WHERE username='{username}'")
@@ -115,6 +123,10 @@ def get_userid(username: str) -> int:
 
 
 def insert_transaction(userid: int, name: str, amount: float):
+    """
+    Add a new row in the expense table based on the values provided.
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"INSERT INTO expenses (userid, name, amount, timestamp) \
@@ -128,6 +140,10 @@ def insert_transaction(userid: int, name: str, amount: float):
 
 
 def delete_expense(id: int):
+    """
+    Delete a row of expense table.
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"DELETE FROM expenses WHERE id={id}")
@@ -141,6 +157,10 @@ def delete_expense(id: int):
         
 
 def get_budget_for_user(userid: int):
+    """
+    Get the budget of the user from the users table.
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"SELECT budget FROM users WHERE userid={userid}")
@@ -152,6 +172,10 @@ def get_budget_for_user(userid: int):
         cursor.close()
 
 def update_budget(userid: int, budget: float):
+    """
+    Set a budget for the specified user in the users table.
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"UPDATE users SET budget={budget} WHERE userid={userid}")
@@ -163,6 +187,10 @@ def update_budget(userid: int, budget: float):
 
 
 def make_budget_null(userid: int):
+    """
+    Remove any budget if set for the given user.
+    """
+    
     cursor = conn.cursor()
     try:
         cursor.execute(f"UPDATE users SET budget=NULL WHERE userid={userid}")

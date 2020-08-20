@@ -67,6 +67,10 @@ def show_helptext():
 
 
 def add_expense(userid: int, cmd: list):
+    """
+    Add a new expense for the logged in user.
+    """
+    
     assert len(cmd) == 3, "Please enter using the format --  add name amount"
     try: 
         name = cmd[1]
@@ -79,6 +83,11 @@ def add_expense(userid: int, cmd: list):
 
 
 def remove_expense(userid: int, cmd: list):
+    """
+    Remove an expense from the already recorded expenses for the 
+    logged in user
+    """
+    
     assert len(cmd) == 2, "Please enter using the format -- remove name"
     
     name = cmd[1]
@@ -101,6 +110,11 @@ def remove_expense(userid: int, cmd: list):
 
 
 def check_budget(userid: int):
+    """
+    Check if budget is set. If set, compare with the expenses and
+    let the user know if the budget has been crossed
+    """
+    
     budget = database.get_budget_for_user(userid)
     if budget[0] == None:
         print("Tip: You can set a budget with the budget command.")
@@ -135,6 +149,10 @@ def check_budget(userid: int):
 
 
 def set_budget(userid: int, cmd: list):
+    """
+    Set a new budget for the logged in user.
+    """
+    
     assert len(cmd) == 2, "Please enter using the format -- budget x"
     try:
         new_budget = float(cmd[1])
@@ -146,6 +164,10 @@ def set_budget(userid: int, cmd: list):
 
 
 def remove_budget(userid: int, cmd: list):
+    """
+    Remove the previously set budget for the logged in user.
+    """
+    
     assert len(cmd) == 1, "Please enter using the format -- nobudget"
     try:
         database.make_budget_null(userid)
@@ -154,6 +176,12 @@ def remove_budget(userid: int, cmd: list):
 
 
 def report(userid: int, cmd: list):
+    """
+    Print a detailed report of the expenses of the logged in user.
+    If asked for multiple weeks, print reports for all the days in
+    that period of time.
+    """
+    
     rows = database.query(f"SELECT name, amount, timestamp FROM expenses \
             WHERE userid={userid}")
     
@@ -247,6 +275,3 @@ def report(userid: int, cmd: list):
             print("Please enter a valid number of weeks")
         except Exception as e:
             print(e.__class__, e.args)
-
-        
-
